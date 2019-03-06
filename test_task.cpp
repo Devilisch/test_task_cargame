@@ -101,7 +101,7 @@ struct sCar {
 	}
 
 	virtual int getFuel() = 0;
-	virtual void refill(int count) = 0; //присваивание значения для функции типа void
+	virtual void refill(int count); //присваивание значения для функции типа void
 };
 
 struct sGasEngine : sCar {
