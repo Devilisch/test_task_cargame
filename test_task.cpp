@@ -131,14 +131,14 @@ struct sHybrid : sGasEngine, sElectroCar {
 	}
 };
 
-std::vector<sCar*> asdasd; //некорректное название, не отображает сути объекта, тяжело воспринимать в коде
+std::vector<sCar*> sCarVector;
 const int initialCarsCount = 10;
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
-//объявить через константы размеры для машин
-#define CAR_
-//объявить через константу начальную скорость машины
+#define CAR_WIDTH 100
+#define CAR_HEIGHT 100
+#define CAR_SPEED 1
 
 
 //неправильное использование функции rand, нужно выделить под её значение отдельную переменную, значения начинаются с 0
@@ -229,8 +229,8 @@ void spawnCarFromRight() {
 //+++
 
 bool main_loop() {
-	for (auto car : asdasd) {
-		for (auto car22 : asdasd) {
+	for (auto car : sCarVector) {
+		for (auto car22 : sCarVector) {
 			//ошибка условий, переписать в соответствии с ТЗ
 			if (car->getFuturePos().intersects(car22->getFuturePos())) {
 				if (car->needPassOtherCar(car22))
