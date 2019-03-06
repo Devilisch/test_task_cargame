@@ -1,3 +1,14 @@
+std::vector<sCar*> sCarVector;
+const int initialCarsCount = 10;
+
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
+#define CAR_WIDTH 100
+#define CAR_HEIGHT 100
+#define CAR_SPEED 1
+#define CAR_CHARGE 1100
+#define CAR_FUEL 1100
+
 struct sPos {
 	sPos() { x = 0; y = 0; }
 	sPos(int aX, int aY) { x = aX; y = aY; }
@@ -110,7 +121,7 @@ struct sGasEngine : sCar {
 	void move() { 
 		if (fuel != 0) { fuel--; sCar::move(); } 
 	}
-	int fuel;
+	int fuel = CAR_FUEL;
 };
 
 struct sElectroCar : sCar {
@@ -119,7 +130,7 @@ struct sElectroCar : sCar {
 	void move() { 
 		if (charge != 0) { charge--; sCar::move(); }
 	}
-	int charge;
+	int charge = CAR_CHARGE;
 };
 
 struct sHybrid : sGasEngine, sElectroCar {
@@ -131,102 +142,42 @@ struct sHybrid : sGasEngine, sElectroCar {
 	}
 };
 
-std::vector<sCar*> sCarVector;
-const int initialCarsCount = 10;
-
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
-#define CAR_WIDTH 100
-#define CAR_HEIGHT 100
-#define CAR_SPEED 1
-
-
-//неправильное использование функции rand, нужно выделить под её значение отдельную переменную, значения начинаются с 0
 void spawnCar() {
-	if (rand() % 4 == 1)
-		spawnCarFromRight();
-	else if (rand() % 4 == 2)
-		spawnCarFromTop();
-	else if (rand() % 4 == 3)
-		spawnCarFromBot();
-	else if (rand() % 4 == 4)
-		SpawnCarFromLeft();
-}
-
-//повторяющиеся функции, можно объединить в одну +++
-void spawnCarFromTop() {
 	sCar* car;
-	//повторяющаяся часть кода, можно выделить в отдельную функцию ---
-	int carType = rand();
-	if (carType % 3 == 0) {
-		car = new sGasEngine();
+	int carType = rand() % 3;
+	switch (carType) {
+		case 0: 
+			car = new sGasEngine();
+			break;
+		case 1:
+			car = new sElectroCar();
+			break;
+		case 2:
+			car = new sHybrid();
+			break;
 	}
-	else if (carType % 3 == 1) {
-		car = new sElectroCar();
-	}
-	else if (carType % 3 == 2) {
-		car = new sHybrid();
-	}
-	//---
-	car->rect = sRect(SCREEN_WIDTH / 2, 0, 100, 100);
-	car->speed = 1;
-	car->dir = eDirection::DOWN; //инициализация направления, должна производится в каждой функции спавна
-}
 
-void spawnCarFromBot() {
-	sCar* car;
-	//повторяющаяся часть кода, можно выделить в отдельную функцию ---
-	int carType = rand();
-	if (carType % 3 == 0) {
-		car = new sGasEngine();
+	int carDirection = rand() % 4;
+	switch (carDirection) {
+		case 0: 
+			car->dir = eDirection::UP;
+			car->rect = sRect(SCREEN_WIDTH / 2 + CAR_SPEED + CAR_HEIGHT / 2, 0, CAR_HEIGHT, CAR_WIDTH);
+			break;
+		case 1:
+			car->dir = eDirection::DOWN;
+			car->rect = sRect(SCREEN_WIDTH / 2 - CAR_SPEED - CAR_HEIGHT / 2, SCREEN_HEIGHT, CAR_HEIGHT, CAR_WIDTH);
+			break;
+		case 2:
+			car->dir = eDirection::LEFT;
+			car->rect = sRect(SCREEN_WIDTH, SCREEN_HEIGHT / 2 + CAR_SPEED + CAR_HEIGHT / 2, CAR_WIDTH, CAR_HEIGHT);
+			break;
+		case 3:
+			car->dir = eDirection::RIGHT;
+			car->rect = sRect(0, SCREEN_HEIGHT / 2 - CAR_SPEED - CAR_HEIGHT / 2, CAR_WIDTH, CAR_HEIGHT);
+			break;
 	}
-	else if (carType % 3 == 1) {
-		car = new sElectroCar();
-	}
-	else if (carType % 3 == 2) {
-		car = new sHybrid();
-	}
-	//---
-	car->rect = sRect(SCREEN_WIDTH / 2, SCREEN_HEIGHT, 100, 100);
-	car->speed = 1;
+	car->speed = CAR_SPEED;
 }
-
-void SpawnCarFromLeft() {
-	sCar* car;
-	//повторяющаяся часть кода, можно выделить в отдельную функцию ---
-	int carType = rand();
-	if (carType % 3 == 0) {
-		car = new sGasEngine();
-	}
-	else if (carType % 3 == 1) {
-		car = new sElectroCar();
-	}
-	else if (carType % 3 == 2) {
-		car = new sHybrid();
-	}
-	//---
-	car->rect = sRect(0, SCREEN_HEIGHT / 2, 100, 100);
-	car->speed = 1;
-}
-
-void spawnCarFromRight() {
-	sCar* car;
-	//повторяющаяся часть кода, можно выделить в отдельную функцию ---
-	int carType = rand();
-	if (carType % 3 == 0) {
-		car = new sGasEngine();
-	}
-	else if (carType % 3 == 1) {
-		car = new sElectroCar();
-	}
-	else if (carType % 3 == 2) {
-		car = new sHybrid();
-	}
-	//---
-	car->rect = sRect(0, SCREEN_HEIGHT / 2, 100, 100);
-	car->speed = 1;
-}
-//+++
 
 bool main_loop() {
 	for (auto car : sCarVector) {
