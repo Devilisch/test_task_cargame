@@ -107,14 +107,18 @@ struct sCar {
 struct sGasEngine : sCar {
 	int getFuel() { return fuel; }
 	void refill(int count) { fuel += count; }
-	void move() { fuel--; sCar::move(); }
+	void move() { 
+		if (fuel != 0) { fuel--; sCar::move(); } 
+	}
 	int fuel;
 };
 
 struct sElectroCar : sCar {
 	int getFuel() { return charge; }
 	void refill(int count) { charge += count; }
-	void move() { charge--; sCar::move(); }
+	void move() { 
+		if (charge != 0) { charge--; sCar::move(); }
+	}
 	int charge;
 };
 
@@ -122,12 +126,8 @@ struct sHybrid : sGasEngine, sElectroCar {
 	void refill(int count) { charge += count / 2; fuel += count / 2; }
 	int getFuel() { return charge + fuel; }
 	void move() {
-		//сомнительная схема сжигания топлива, с учётом принципа пополнения топлива
-		if (rand() % 2 == 0)
-			charge--;
-		else
-			fuel--;
-		sCar::move();
+		if (fuel != 0) { fuel--; sCar::move(); }
+		else if (charge != 0) { charge--; sCar::move(); }	
 	}
 };
 
